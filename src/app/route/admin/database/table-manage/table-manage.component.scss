@@ -1,0 +1,61 @@
+@import '../../../../../assets/styles/variate';
+.tableManage{
+  .containter{
+    min-height: 230px;
+    height: calc(100vh - 190px);
+    .tree{
+      width: 23%;
+      height: 100%;
+      float: left;
+      overflow: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      padding: 10px 0;
+      .arrow {
+        font-size: 12px;
+        margin-right: 5px;
+      }
+      .folder {
+        vertical-align: middle;
+      }
+      dl{
+        line-height: 24px;
+        dt{ 
+          cursor: pointer;
+          padding: 0 20px;
+          &:hover{
+            background-color: #efefef;
+          }
+          padding-left: 10px;
+          white-space: nowrap;
+        }
+        dd{
+          cursor: pointer;
+          padding-left: 30px;
+          white-space: nowrap;
+          &:hover{
+            background-color: #efefef;
+          }
+          &.active{
+            color: $color;
+          }
+        }
+      }
+    }
+    .box{
+      float: right;
+      width: 75%;
+      height: 100%;
+      border: 1px solid #ccc;
+      .item{
+        min-height: 190px;
+        padding: 16px 10px 16px;
+        height: calc(100vh - 227px);
+        overflow: auto;
+        .itemContent{
+          min-width: 800px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'assets/styles/initialization';
+@import 'assets/styles/variate'; 
+@import 'assets/styles/shortcut'; 
+
+/* 项目个性化样式start */
+html, body{
+	width: 100%;
+	height: 100%;
+	font-size: 14px;
+	line-height: 1.5;
+	padding-right: 0 !important;
+	font-family: "Monospaced Number","Chinese Quote",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #515253;
+}
+body{
+	background-color: $bgColor;
+}
+
+//页面头部标题
+.head-title{
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+	padding-left: 5px;
+	border-bottom: 1px solid #e8e8e8;
+	margin-bottom: 10px;
+}
+
+//标题右侧链接（“返回”等）,有时需要在外部写个向右浮动的盒子
+.title-right-link{
+	float: right;
+	font-size: 14px;
+	line-height: 40px;
+	padding: 0 5px;
+}
+
+// 错误提示信息
+.err{
+	position: relative;
+	span{
+		position: absolute;
+		top: 0;
+		left: 0;
+		color: $red;
+		font-size: 12px;
+		font-weight: normal;
+	}
+}
+
+/* 项目个性化样式end */

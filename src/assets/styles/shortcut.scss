@@ -1,0 +1,192 @@
+/* 快捷样式 */
+.clearfix::before,
+.clearfix::after {
+  content: "";
+  height: 0;
+  line-height: 0;
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+
+.red {
+  color: $red !important;
+}
+
+.blue {
+  color: $blue !important;
+}
+
+.green {
+  color: $green !important;
+}
+
+.color-aaa {
+  color: $color-aaa !important;
+}
+
+.color-333 {
+  color: $color-333 !important;
+}
+.f-l{
+  float: left !important;
+}
+
+.f-r{
+  float: right !important;
+}
+
+.tac{
+  text-align: center !important;
+}
+
+.tar{
+  text-align: right !important;
+}
+
+.vat{
+  vertical-align: top !important;
+}
+
+.vam{
+  vertical-align: middle !important;
+}
+
+.vab{
+  vertical-align: bottom !important;
+}
+
+.ofa{
+  overflow: auto !important;
+}
+
+.pointer{
+  cursor: pointer !important;
+}
+
+.bold{
+  font-weight: bold !important;
+}
+
+.pointer{
+  cursor: pointer !important;
+}
+
+.db{
+  display: block !important;
+}
+
+.dn{
+  display: none !important;
+}
+
+.dib{
+  display: inline-block !important;
+}
+
+.relative{
+  position: relative !important;
+}
+
+.absolute{
+  position: absolute !important;
+}
+
+@for $i from 10 through 50 {
+  .f#{$i} {
+    font-size: $i*1px !important;
+  }
+}
+
+@for $i from 1 through 10 {
+  .br#{$i*1} {
+    border-radius: $i*1px !important;
+  }
+}
+
+@for $i from 1 through 10 {
+  .w#{$i*10} {
+    width: $i*10px !important;
+  }
+}
+
+@for $i from 1 through 10 {
+  .h#{$i*10} {
+    height: $i*10px !important;
+  }
+}
+
+@for $i from 1 through 100 {
+  .lh#{$i*1} {
+    line-height: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 100 {
+  .mt#{$i} {
+    margin-top: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 100 {
+  .mr#{$i} {
+    margin-right: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 100 {
+  .mb#{$i} {
+    margin-bottom: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 100 {
+  .ml#{$i} {
+    margin-left: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 100 {
+  .m#{$i} {
+    margin: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 60 {
+  .pt#{$i*1} {
+    padding-top: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 60 {
+  .pr#{$i*1} {
+    padding-right: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 60 {
+  .pb#{$i*1} {
+    padding-bottom: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 60 {
+  .pl#{$i*1} {
+    padding-left: $i*1px !important;
+  }
+}
+
+@for $i from 0 through 60 {
+  .p#{$i*1} {
+    padding: $i*1px !important;
+  }
+}

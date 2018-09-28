@@ -1,0 +1,141 @@
+@import '../../../../../assets/styles/variate';
+.itemEdit{
+  .content{
+    min-height: 230px;
+    height: calc(100vh - 190px);
+    .tree{
+      width: 25%;
+      height: 100%;
+      float: left;
+      overflow: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      padding: 10px 0;
+    }
+    .box{
+      float: right;
+      width: 73%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      #jsoneditor{
+        width: 100%;
+        height: 100%;
+        .ace_scroller{
+          background-color: red;
+          width: 800px;
+        }
+        .actionlist{
+          height: 35px;
+          position: absolute;
+          padding: 2px;
+          top: 1px;
+          right: 0;
+          z-index: 5;
+          &.left{
+            left: 0;
+            right: auto;
+          }
+          .item{
+            float: left;
+            width: 27px;
+            height: 27px;
+            padding: 1px 2px;
+            margin: 2px;
+            text-align: center;
+            border: 1px solid transparent;
+            cursor: pointer;
+            &:hover{
+              background-color: #b7b7b7;
+              border: 1px solid #cecece;
+              border-radius: 2px;
+              .iconfont{
+                color: #e3e3e3;
+              }
+            }
+            .iconfont{
+              display: block;
+              height: 21px;
+              line-height: 21px;
+              font-size: 16px;
+              color: #e6e6e6;
+            }
+          }
+        }
+        .templateBox{
+          box-sizing: border-box;
+          height: calc(100% - 36px);
+          padding: 10px 0;
+          position: absolute;
+          top: 36px;
+          right: -240px;
+          width: 240px;
+          z-index: 10;
+          border: 1px solid #ccc;
+          background-color: #fff;
+          transition: right .5s;
+          &.active{
+            right: 0px;
+          }
+          .templateSearch{
+            padding: 0 5px;
+          }
+          .templateResult{
+            margin-top: 5px;
+            height: calc(100% - 27px);
+            overflow: auto;
+            dl{
+              dt{
+                padding-left: 5px;
+                line-height: 36px;
+              }
+              dd{
+                line-height: 30px;
+                .list-item{
+                  padding: 5px;
+                  border-bottom: none;
+                  &:hover{
+                    background-color: #efefef;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+  // 树状结构
+  dl.treeContent{
+    line-height: 24px;
+    .arrow {
+      font-size: 12px;
+      margin-right: 5px;
+    }
+    .folder {
+      vertical-align: middle;
+    }
+    dt{ 
+      cursor: pointer;
+      padding: 0 20px;
+      &:hover{
+        background-color: #efefef;
+      }
+      padding-left: 10px;
+      white-space: nowrap;
+    }
+    dd{
+      cursor: pointer;
+      padding-left: 30px;
+      white-space: nowrap;
+      &:hover{
+        background-color: #efefef;
+      }
+      &.active{
+        color: $color;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,315 @@
+<div class="itemEdit">
+	<div class="head-title">
+		{{project.name}} [ {{project.id}} ]
+		<a class="title-right-link" routerLink="/admin">
+			<i class="anticon anticon-arrow-left"></i>返回
+		</a>
+	</div>
+	<div class="content clearfix">
+		<div class="tree">
+			<dl class="treeContent">
+				<ng-container>
+					<dt (click)="projectsExpanded = !projectsExpanded">
+						<i *ngIf="!projectsExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="projectsExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!projectsExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="projectsExpanded" class="anticon anticon-folder-open folder"></i>
+						projects
+					</dt>
+					<ng-container *ngIf="projectsExpanded">
+						<dd *ngFor="let item of projects"
+							(click)="fileEdit(item)" 
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+				<ng-container>
+					<dt (click)="pagesExpanded = !pagesExpanded"
+						(contextmenu)="contextMenu($event, folderRight, 'page')">
+						<i *ngIf="!pagesExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="pagesExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!pagesExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="pagesExpanded" class="anticon anticon-folder-open folder"></i>
+						pages
+					</dt>
+					<ng-container *ngIf="pagesExpanded">
+						<dd *ngFor="let item of pages"
+							(click)="fileEdit(item)" 
+							(contextmenu)="contextMenu($event, fileRight, 'page', item)"
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+				<ng-container>
+					<dt (click)="viewsExpanded = !viewsExpanded"
+						(contextmenu)="contextMenu($event, folderRight, 'view')">
+						<i *ngIf="!viewsExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="viewsExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!viewsExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="viewsExpanded" class="anticon anticon-folder-open folder"></i>
+						views
+					</dt>
+					<ng-container *ngIf="viewsExpanded">
+						<dd *ngFor="let item of views"
+							(click)="fileEdit(item)" 
+							(contextmenu)="contextMenu($event, fileRight, 'view', item)"
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+				<ng-container>
+					<dt (click)="tagsExpanded = !tagsExpanded"
+						(contextmenu)="contextMenu($event, folderRight, 'tag')">
+						<i *ngIf="!tagsExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="tagsExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!tagsExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="tagsExpanded" class="anticon anticon-folder-open folder"></i>
+						tags
+					</dt>
+					<ng-container *ngIf="tagsExpanded">
+						<dd *ngFor="let item of tags"
+							(click)="fileEdit(item)" 
+							(contextmenu)="contextMenu($event, fileRight, 'tag', item)"
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+				<ng-container>
+					<dt (click)="eventsExpanded = !eventsExpanded"
+						(contextmenu)="contextMenu($event, folderRight, 'event')">
+						<i *ngIf="!eventsExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="eventsExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!eventsExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="eventsExpanded" class="anticon anticon-folder-open folder"></i>
+						events
+					</dt>
+					<ng-container *ngIf="eventsExpanded">
+						<dd *ngFor="let item of events"
+							(click)="fileEdit(item)" 
+							(contextmenu)="contextMenu($event, fileRight, 'event', item)"
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+				<ng-container>
+					<dt (click)="servicesExpanded = !servicesExpanded"
+						(contextmenu)="contextMenu($event, folderRight, 'service')">
+						<i *ngIf="!servicesExpanded" class="iconfont icon-arrowrightb arrow"></i>
+						<i *ngIf="servicesExpanded" class="iconfont icon-arrowdownb arrow"></i>
+						<i *ngIf="!servicesExpanded" class="anticon anticon-folder folder"></i>
+						<i *ngIf="servicesExpanded" class="anticon anticon-folder-open folder"></i>
+						services
+					</dt>
+					<ng-container *ngIf="servicesExpanded">
+						<dd *ngFor="let item of services"
+							(click)="fileEdit(item)" 
+							(contextmenu)="contextMenu($event, fileRight, 'service', item)"
+							[class.active]="file?.id==item.id">
+							<i class="anticon anticon-file"></i>
+							{{item.name}}
+						</dd>
+					</ng-container>
+				</ng-container>
+			</dl>
+			<ng-template #folderRight>
+		        <ul nz-menu nzInDropDown>
+		          	<li nz-menu-item (click)="newFile()">新建文件</li>
+		        </ul>
+	      	</ng-template>
+			<ng-template #fileRight>
+		        <ul nz-menu nzInDropDown>
+		          	<li nz-menu-item (click)="rename()">重命名</li>
+		          	<li nz-menu-item (click)="delFile()">删除</li>
+		        </ul>
+	      	</ng-template>
+		</div>
+		<div class="box">
+			<div id="jsoneditor">
+				<div class="actionlist clearfix left">
+					<div class="item" title="保存文件" (click)="save()">
+						<i class="iconfont icon-baocun1"></i>
+					</div>
+				</div>
+				<div class="actionlist clearfix">
+					<div class="item" title="使用模板" (click)="showTemplateBox = !showTemplateBox">
+						<i class="iconfont icon-arrow-left" *ngIf="!showTemplateBox"></i>
+						<i class="iconfont icon-arrow-right" *ngIf="showTemplateBox"></i>
+					</div>
+				</div>
+				<div class="templateBox" [class.active]="showTemplateBox">
+					<div class="templateSearch">
+						<nz-input-group [nzSuffix]="suffixTemplate">
+					      	<input type="text" nz-input placeholder="关键词搜索" [(ngModel)]="templateKey" (ngModelChange)="getTemplatesByKey($event)">
+					    </nz-input-group>
+					    <ng-template #suffixTemplate>
+				    		<i class="anticon anticon-search" *ngIf="!templateKey"></i>
+				    		<i class="pointer anticon anticon-close-circle" (click)="templateKey=null;getTemplatesByKey(null)" *ngIf="templateKey"></i>
+				    	</ng-template>							
+					</div>
+					<div class="templateResult">
+						<nz-alert 
+							nzType="info" 
+							class="m5"
+							nzMessage="暂无合适模板" 
+							*ngIf="!templatesResult.projects?.length && !templatesResult.pages?.length && !templatesResult.views?.length && !templatesResult.tags?.length && !templatesResult.events?.length && !templatesResult.services?.length">
+						</nz-alert>
+						<dl>
+							<ng-container>
+								<dt *ngIf="templatesResult.projects?.length">projects</dt>
+								<dd>
+									<nz-list [nzDataSource]="templatesResult.projects" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>
+							</ng-container>
+							<ng-container>
+								<dt *ngIf="templatesResult.pages?.length">pages</dt>
+								<dd> 
+									<nz-list [nzDataSource]="templatesResult.pages" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>						
+							</ng-container>
+							<ng-container>
+								<dt *ngIf="templatesResult.views?.length">views</dt>
+								<dd>
+									<nz-list [nzDataSource]="templatesResult.views" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>					
+							</ng-container>
+							<ng-container>
+								<dt *ngIf="templatesResult.tags?.length">tags</dt>
+								<dd>
+									<nz-list [nzDataSource]="templatesResult.tags" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>						
+							</ng-container>
+							<ng-container>
+								<dt *ngIf="templatesResult.events?.length">events</dt>
+								<dd>
+									<nz-list [nzDataSource]="templatesResult.events" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>						
+							</ng-container>
+							<ng-container>
+								<dt *ngIf="templatesResult.services?.length">services</dt>
+								<dd>
+									<nz-list [nzDataSource]="templatesResult.services" [nzRenderItem]="item">
+								    	<ng-template #item let-item>
+								     	 	<nz-list-item [nzContent]="projectsContent" class="list-item">
+								     	 		<img src="{{item.url || '../../../assets/imgs/default.png'}}" class="mr10 br2 pointer" width="36" height="36" (click)="templatePic()">
+									        	<ng-template #projectsContent>
+									              	<div>
+										                <p>{{item.name}}</p>   
+										                <a class="f12">插入模板</a>            
+								             	 	</div>
+									            </ng-template>  
+									      	</nz-list-item>
+									    </ng-template>
+								  	</nz-list>
+								</dd>						
+							</ng-container>
+						</dl>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+</div>
+
+<!-- 重命名模态框 -->
+<nz-modal [(nzVisible)]="renameModal" (nzOnCancel)="renameModal=false" (nzOnOk)="renameOk()" nzWidth="350" nzTitle="重命名">
+	<input type="text" nz-input [(ngModel)]="newName" placeholder="请输入新名称">
+</nz-modal>
+
+<!-- 新建文件模态框 -->
+<nz-modal [(nzVisible)]="newFileModal" (nzOnCancel)="newFileModal=false" (nzOnOk)="newFileOk()" nzWidth="350" nzTitle="{{'新建' + activeSort + 's文件'}}">
+	<input name="newFileName" type="text" nz-input [(ngModel)]="newFileName" placeholder="请输入文件名称（英文）">
+	<nz-select
+		[(ngModel)]="template" 
+		[style.width]="'100%'" 
+		[nzPlaceHolder]="'可选择文件模板'" 
+		[nzNotFoundContent]="'暂无可选模板'"	
+		name="template"
+		class="mt15">
+		<nz-option *ngIf="!templates || templates.length" nzLabel="不使用模板"></nz-option>
+		<nz-option *ngFor="let item of templates" nzValue="{{item.template}}" nzLabel="{{item.name}}"></nz-option>
+	</nz-select>
+</nz-modal>
+
+<!-- 预览模板 -->
+<nz-modal [nzVisible]="previewVisible" nzWidth="800" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
+	<ng-template #modalContent>
+		<div class="pt30">
+			<img *ngIf="previewImage" [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+			<nz-alert 
+				nzType="info" 
+				nzMessage="暂无预览图" 
+				*ngIf="!previewImage">
+			</nz-alert>			
+		</div>
+	</ng-template>
+</nz-modal>

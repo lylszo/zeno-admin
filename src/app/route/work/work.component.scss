@@ -1,0 +1,57 @@
+@import '../../../assets/styles/variate';
+.myWork{
+	min-width: 930px;
+	min-height: 550px;
+	padding-top: calc(50vh - 260px);
+	position: relative;
+	.tabset{
+		margin: 0 auto;
+		width: 800px;
+		height: 516px;
+		box-shadow: 0 0 3px #cfdbe2;
+		background-color: #fff;
+		border-radius: 4px;
+		&.hover{
+			box-shadow: 3px 3px 13px #cfdbe2;
+		}
+		.title{
+			line-height: 45px;
+			margin-right: 10px;
+		}
+		.myList{
+			margin-top: -16px;
+			max-height: 473px;
+			padding: 23px 15px 0;
+			overflow: auto;
+			.box{
+				padding: 0 10px 25px;
+				height: 225px;
+				.card{
+					display: block;
+					width: 100%;
+					text-align: center;
+					transition: box-shadow .3s;
+					.ant-card-body{
+						padding: 0;
+					}
+					&:hover{
+						box-shadow: 0 0 5px $color;
+					}
+				}			
+			}
+		}
+		.content{
+			padding: 0 15px;
+			.list{
+				margin-top: 15px;
+				max-height: 410px;
+				overflow: auto;
+				.checkIcon{
+					font-size: 28px;
+					color: $green;
+				}
+			}
+		}		
+	}
+	
+}

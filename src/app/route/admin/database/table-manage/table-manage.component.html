@@ -1,0 +1,588 @@
+<div class="tableManage">
+	<div class="head-title">
+		数据表管理
+		<button class="f-r" nz-button nzType="primary" (click)="newTable()">新建表</button>
+	</div>
+	<div class="containter clearfix">
+		<div class="tree">
+			<dl>
+				<dt (click)="expanded = !expanded" 
+					(contextmenu)="contextMenu($event, folderRight)">
+					<i *ngIf="!expanded" class="iconfont icon-arrowrightb arrow"></i>
+					<i *ngIf="expanded" class="iconfont icon-arrowdownb arrow"></i>
+					<i *ngIf="!expanded" class="anticon anticon-folder folder"></i>
+					<i *ngIf="expanded" class="anticon anticon-folder-open folder"></i>
+					tables
+				</dt>
+				<ng-container *ngIf="list && list.length && expanded">
+					<dd *ngFor="let item of list;let i = index;" 
+						(click)="clickTable(item)" 
+						[class.active]="item.name == activeTable?.name"
+						(contextmenu)="contextMenu($event, tableRight, item, i)"> 
+						<i class="iconfont icon-table"></i>
+						{{item.name}}
+					</dd>
+				</ng-container>
+			</dl>
+			<ng-template #folderRight>
+		        <ul nz-menu nzInDropDown>
+		          	<li nz-menu-item (click)="newTable()">新建表</li>
+		        </ul>
+	      	</ng-template>
+			<ng-template #tableRight>
+		        <ul nz-menu nzInDropDown>
+		          	<li nz-menu-item (click)="newTable(1)">编辑</li>
+		          	<li nz-menu-item (click)="tableDel($event)">删除</li>
+		        </ul>
+	      	</ng-template>				
+		</div>
+		<div class="box">
+			<nz-tabset 
+				class="tabset"
+				[nzSize]="'small'" 
+				[nzTabBarStyle]="{backgroundColor: '#efefef', borderBottom: '1px solid #ccc','margin-bottom': '0px'}" 
+				[nzTabBarGutter]=20>
+				<nz-tab class="nzTab" nzTitle="表" (nzClick)="cancelEdit()">
+					<div class="item">
+						<p *ngIf="list.length && !activeTable">选一个表来瞅瞅吧</p>
+						<p *ngIf="!list.length && !activeTable">还没有表数据，先创建一个表吧</p>
+						<div *ngIf="activeTable">
+							<p class="f16 mb10">{{activeTable.fullname}}</p>
+							<p class="color-aaa">{{activeTable.description}}</p>			
+						</div>							
+					</div>
+				</nz-tab>
+				<nz-tab class="nzTab" nzTitle="字段" (nzClick)="cancelEdit()">
+					<div class="item">
+						<div class="itemContent">
+							<p *ngIf="list.length && !activeTable">选一个表来瞅瞅吧</p>
+							<p *ngIf="!list.length && !activeTable">还没有表数据，先创建一个表吧</p>
+							<nz-table 
+								*ngIf="activeTable"
+								#columnTable 
+								[nzData]="activeTable.columns" 
+								[nzSize]="'small'"
+								[nzNoResult]="''"
+								[nzShowPagination]=false>
+								<thead>
+									<tr>
+										<th nzWidth="10%">名称</th>
+										<th nzWidth="19%">描述</th>
+										<th nzWidth="12%">默认值</th>
+										<th nzWidth="12%">类型</th>
+										<th nzWidth="8%">长度</th>
+										<th nzWidth="8%">查询</th>
+										<th nzWidth="8%">ES</th>
+										<th nzWidth="8%">主键</th>
+										<th nzWidth="15%">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let item of columnTable.data;let i=index;">
+										<td>
+											<p *ngIf="!item.edit">{{item.colname}}</p>
+											<input 
+												type="text" 
+												nz-input 
+												placeholder="20字符以内" 
+												maxlength="20" 
+												[nzSize]="'small'" 
+												*ngIf="item.edit" 
+												[(ngModel)]="editColumn.colname">
+										</td>
+										<td>
+											<p *ngIf="!item.edit">{{item.description}}</p>
+											<textarea
+												type="text" 
+												nz-input 
+												placeholder="100字符以内" 
+												maxlength="100" 
+												[nzSize]="'small'" 
+												*ngIf="item.edit" 
+												[(ngModel)]="editColumn.description">
+											</textarea>
+										</td>
+										<td>
+											<p *ngIf="!item.edit && item.type != 4">{{item.defaultValue || 'null'}}</p>
+											<p *ngIf="!item.edit && item.type == 4">{{item.defaultValue}}</p>
+											<input  
+												*ngIf="item.edit && editColumn.type != 4"
+												type="text" 
+												nz-input 
+												placeholder="{{defaultValueTip}}" 
+												[nzSize]="'small'" 
+												[(ngModel)]="editColumn.defaultValue" >
+											<nz-select 
+												[nzSize]="'small'" 
+												*ngIf="item.edit && editColumn.type == 4" 
+												[(ngModel)]="editColumn.defaultValue" 
+												[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of ['false', 'true']" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<p *ngIf="!item.edit">{{item.type | columnType}}</p>
+											<nz-select 
+												[nzSize]="'small'" 
+												*ngIf="item.edit" 
+												(ngModelChange)="changeType($event)"
+												[(ngModel)]="editColumn.type" 
+												[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of columnTypeList" 
+										      		[nzValue]="option.code" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<p *ngIf="!item.edit && item.type != 4">{{item.limit}}</p>
+											<p *ngIf="!item.edit && item.type == 4">-</p>
+											<input 
+												[nzSize]="'small'" 
+												*ngIf="item.edit && editColumn.type != 4" 
+												placeholder="正整数" 
+												type="text" 
+												nz-input 
+												[(ngModel)]="editColumn.limit">
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.allowQuery"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editColumn.allowQuery"></label>
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.addEs"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editColumn.addEs"></label>
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.ispk"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editColumn.ispk"></label>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<a nzTitle="编辑" nzPlacement="bottom" nz-tooltip (click)="columnEdit(item)">
+													<i class="iconfont icon-edit"></i>
+												</a>
+												<nz-divider nzType="vertical" class="f16"></nz-divider>
+												<nz-popconfirm [nzTitle]="delTitle" (nzOnConfirm)="columnDel(item)">
+									              	<a nzTitle="删除" nzPlacement="bottom" nz-tooltip nz-popconfirm><i class="iconfont icon-delete"></i></a>
+									            </nz-popconfirm>
+								            	<ng-template #delTitle>{{'确定删除字段' + item.colname + '？'}}</ng-template>
+											</div>
+							              	<div *ngIf="item.edit">
+							              		<a (click)="item.edit=false;">取消</a>
+							              		<a (click)="columnEditOk(item)" class="ml10">保存</a>
+							              	</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<input  
+												type="text" 
+												nz-input 
+												[nzSize]="'small'" 
+												*ngIf="columnAddFlag"
+												placeholder="20字符以内" 
+												maxlength="20" 
+												[(ngModel)]="editColumn.colname">
+										</td>
+										<td>
+											<textarea  
+												type="text" 
+												nz-input 
+												*ngIf="columnAddFlag"
+												placeholder="100字符以内" 
+												maxlength="100" 
+												[(ngModel)]="editColumn.description">
+											</textarea>
+										</td>
+										<td>
+											<input  
+												*ngIf="columnAddFlag && editColumn.type != 4"
+												type="text" 
+												nz-input 
+												placeholder="{{defaultValueTip}}" 
+												[nzSize]="'small'" 
+												[(ngModel)]="editColumn.defaultValue" >
+											<nz-select 
+												[nzSize]="'small'" 
+												*ngIf="columnAddFlag && editColumn.type == 4" 
+												[(ngModel)]="editColumn.defaultValue" 
+												[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of [false, true]" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<nz-select 
+												[nzSize]="'small'" 
+												*ngIf="columnAddFlag" 
+												[(ngModel)]="editColumn.type" 
+												(ngModelChange)="changeType($event)"
+												[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of columnTypeList" 
+										      		[nzValue]="option.code" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<input 
+												[nzSize]="'small'" 
+												*ngIf="columnAddFlag && editColumn.type != 4" 
+												type="text" 
+												nz-input 
+												placeholder="正整数" 
+												[(ngModel)]="editColumn.limit">
+										</td>
+										<td>
+											<label *ngIf="columnAddFlag" nz-checkbox [(ngModel)]="editColumn.allowQuery"></label>
+										</td>
+										<td>
+											<label *ngIf="columnAddFlag" nz-checkbox [(ngModel)]="editColumn.addEs"></label>
+										</td>
+										<td>
+											<label *ngIf="columnAddFlag" nz-checkbox [(ngModel)]="editColumn.ispk"></label>
+										</td>
+										<td>
+											<div *ngIf="!columnAddFlag">
+												<a (click)="columnEdit()">
+													<i class="iconfont icon-add"></i>添加数据
+												</a>
+											</div>
+											<div *ngIf="columnAddFlag">
+												<a (click)="columnAddFlag=false;">取消</a>
+							              		<a (click)="columnEditOk()" class="ml10">保存</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</nz-table>								
+						</div>
+					</div>
+				</nz-tab>
+				<nz-tab class="nzTab" nzTitle="关系" (nzClick)="cancelEdit()">
+					<div class="item">
+						<div class="itemContent">
+							<p *ngIf="list.length && !activeTable">选一个表来瞅瞅吧</p>
+							<p *ngIf="!list.length && !activeTable">还没有表数据，先创建一个表吧</p>
+							<nz-table 
+								*ngIf="activeTable"
+								#relationTable 
+								[nzData]="activeTable.keys" 
+								[nzSize]="'small'"
+								[nzShowPagination]=false>
+								<thead>
+									<tr>
+										<th nzWidth="21%">当前表字段</th>
+										<th nzWidth="21%">目标表</th>
+										<th nzWidth="21%">目标表字段</th>
+										<th nzWidth="16%">关系类型</th>
+										<th nzWidth="21%">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let item of relationTable.data;let i=index;">
+										<td>
+											<div *ngIf="!item.edit">
+												<p>{{item.sourceColumnName}}</p>
+											</div>
+											<nz-select 
+												[nzSize]="'small'" 
+												nzShowSearch
+												[compareWith]="compareFn"
+									      		[nzPlaceHolder]="'请选择'"
+									      		*ngIf="item.edit" 
+									      		[(ngModel)]="editRelation.source" 
+									      		[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of activeTable.columns" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.colname">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<p>{{item.targetTableName}}</p>
+											</div>
+											<nz-select 
+												[nzSize]="'small'" 
+												nzShowSearch
+												*ngIf="item.edit" 
+												[compareWith]="compareFn"
+												(ngModelChange)="getTargetColumns($event)"
+												[(ngModel)]="editRelation.targetTable" 
+												[style.width]="'100%'" 
+									      		[nzPlaceHolder]="'请选择'">
+										      	<nz-option 
+										      		*ngFor="let option of targetTables"
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<p>{{item.targetColumnName}}</p>
+											</div>
+											<nz-select 
+												nzShowSearch
+												[nzSize]="'small'" 
+												*ngIf="item.edit" 
+												[compareWith]="compareFn"
+									      		[nzPlaceHolder]="'请选择'"
+												[(ngModel)]="editRelation.target" 
+												[style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of targetColumns" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.colname">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<p>{{item.type | relationType}}</p>
+											</div>
+											<nz-select [nzSize]="'small'" *ngIf="item.edit" [(ngModel)]="editRelation.type" [style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of this.relationTypeList" 
+										      		[nzValue]="option.code" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<a nzTitle="编辑" nzPlacement="bottom" nz-tooltip (click)="relationEdit(item)">
+													<i class="iconfont icon-edit"></i>
+												</a>
+												<nz-divider nzType="vertical" class="f16"></nz-divider>
+												<nz-popconfirm [nzTitle]="delTitle" (nzOnConfirm)="relationDel(item)">
+									              	<a nzTitle="删除" nzPlacement="bottom" nz-tooltip nz-popconfirm><i class="iconfont icon-delete"></i></a>
+									            </nz-popconfirm>
+								            	<ng-template #delTitle>{{'确定删除该关系？'}}</ng-template>
+											</div>
+							              	<div *ngIf="item.edit">
+							              		<a (click)="item.edit=false;">取消</a>
+							              		<a (click)="relationEditOk(item)" class="ml10">保存</a>
+							              	</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<nz-select 
+												[nzSize]="'small'" 
+												nzShowSearch
+												*ngIf="relationAddFlag" 
+												[(ngModel)]="editRelation.source" 
+												[style.width]="'100%'"
+									      		[nzPlaceHolder]="'请选择'">
+										      	<nz-option 
+										      		*ngFor="let option of activeTable.columns" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.colname">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<nz-select 
+												nzShowSearch
+												[nzSize]="'small'" 
+												*ngIf="relationAddFlag" 
+												(ngModelChange)="getTargetColumns($event)"
+												[(ngModel)]="editRelation.targetTable" 
+												[style.width]="'100%'"
+									      		[nzPlaceHolder]="'请选择'">
+										      	<nz-option 
+										      		*ngFor="let option of targetTables" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<nz-select 
+												[nzSize]="'small'" 
+												nzShowSearch
+												*ngIf="relationAddFlag" 
+												[(ngModel)]="editRelation.target" 
+												[style.width]="'100%'"
+									      		[nzPlaceHolder]="'请选择'">
+										      	<nz-option 
+										      		*ngFor="let option of targetColumns" 
+										      		[nzValue]="option" 
+										      		[nzLabel]="option.colname">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<nz-select [nzSize]="'small'" *ngIf="relationAddFlag" [(ngModel)]="editRelation.type" [style.width]="'100%'">
+										      	<nz-option 
+										      		*ngFor="let option of this.relationTypeList" 
+										      		[nzValue]="option.code" 
+										      		[nzLabel]="option.name">
+									      		</nz-option>
+										    </nz-select>
+										</td>
+										<td>
+											<div *ngIf="!relationAddFlag">
+												<a (click)="relationEdit()">
+													<i class="iconfont icon-add"></i>添加数据
+												</a>
+											</div>
+											<div *ngIf="relationAddFlag">
+												<a (click)="relationAddFlag=false;">取消</a>
+							              		<a (click)="relationEditOk()" class="ml10">保存</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</nz-table>		
+						</div>
+					</div>
+				</nz-tab>
+				<nz-tab class="nzTab" nzTitle="权限" (nzClick)="cancelEdit()">
+					<div class="item">
+						<div class="itemContent">
+							<p *ngIf="list.length && !activeTable">选一个表来瞅瞅吧</p>
+							<p *ngIf="!list.length && !activeTable">还没有表数据，先创建一个表吧</p>
+							<nz-table 
+								*ngIf="activeTable"
+								#permitTable 
+								[nzData]="activeTable.projectAccessVos" 
+								[nzSize]="'small'"
+								[nzFrontPagination]=false
+								[nzShowPagination]=false>
+								<thead>
+									<tr>
+										<th nzWidth="16%">项目id</th>
+										<th nzWidth="12%">可读</th>
+										<th nzWidth="12%">可写</th>
+										<th nzWidth="12%">可改结构</th>
+										<th nzWidth="18%">创建时间</th>
+										<th nzWidth="18%">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let item of permitTable.data;let i=index;">
+										<td>
+										    <p>{{item.projectId}}</p>
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.read"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editPermit.read"></label>
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.write"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editPermit.write"></label>
+										</td>
+										<td>
+											<label *ngIf="!item.edit" [nzDisabled]="true" nz-checkbox [(ngModel)]="item.schema"></label>
+											<label *ngIf="item.edit" nz-checkbox [(ngModel)]="editPermit.schema"></label>
+										</td>
+										<td>
+											<p>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+										</td>
+										<td>
+											<div *ngIf="!item.edit">
+												<a nzTitle="编辑" nzPlacement="bottom" nz-tooltip (click)="permitEdit(item)">
+													<i class="iconfont icon-edit"></i>
+												</a>
+												<nz-divider nzType="vertical" class="f16"></nz-divider>
+												<nz-popconfirm [nzTitle]="delTitle" (nzOnConfirm)="permitDel(item)">
+									              	<a nzTitle="删除" nzPlacement="bottom" nz-tooltip nz-popconfirm><i class="iconfont icon-delete"></i></a>
+									            </nz-popconfirm>
+								            	<ng-template #delTitle>{{'确定删除和项目' + item.projectId + '的权限设置？'}}</ng-template>
+											</div>
+							              	<div *ngIf="item.edit" class="lh24">
+							              		<a (click)="item.edit=false;">取消</a>
+							              		<a (click)="permitEditOk(item)" class="ml10">保存</a>
+							              	</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+										    <input 
+										    	[nzSize]="'small'" 
+										    	*ngIf="permitAddFlag" 
+										    	type="number" 
+										    	nz-input 
+										    	[(ngModel)]="editPermit.projectId" 
+										    	placeholder="请输入项目id">
+										</td>
+										<td>
+											<label *ngIf="permitAddFlag" nz-checkbox [(ngModel)]="editPermit.read"></label>
+										</td>
+										<td>
+											<label *ngIf="permitAddFlag" nz-checkbox [(ngModel)]="editPermit.write"></label>
+										</td>
+										<td>
+											<label *ngIf="permitAddFlag" nz-checkbox [(ngModel)]="editPermit.schema"></label>
+										</td>
+										<td>
+											
+										</td>
+										<td>
+											<div *ngIf="!permitAddFlag">
+												<a (click)="permitEdit()">
+													<i class="iconfont icon-add"></i>添加数据
+												</a>
+											</div>
+											<div *ngIf="permitAddFlag">
+												<a (click)="permitAddFlag=false;">取消</a>
+							              		<a (click)="permitEditOk()" class="ml10">保存</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</nz-table>							
+						</div>
+					</div>
+				</nz-tab>
+		    </nz-tabset>				
+		</div>
+	</div>
+</div>
+
+<!-- 新建表模态框 -->
+<nz-modal [(nzVisible)]="newTableModal" (nzOnCancel)="newTableModal=false" (nzOnOk)="newTableOk()" nzTitle="{{tableModalTitle}}">
+  <form nz-form [formGroup]="newTableForm" *ngIf="newTableModal">
+    <nz-form-item [class.has-error]="newTableFormSubmitted && newTableForm.get('name').errors" *ngIf="tableModalTitle == '新建表'">
+      <nz-form-label [nzSpan]="6" nzRequired>名称（英文）</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input type="text" nz-input formControlName="name" placeholder="请输入表名称（英文），限20字" maxlength="20">
+        <nz-form-explain *ngIf="(newTableForm.get('name').dirty || newTableFormSubmitted) && newTableForm.get('name').errors">表的英文名称不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item [class.has-error]="newTableFormSubmitted && newTableForm.get('fullname').errors">
+      <nz-form-label [nzSpan]="6" nzRequired>全名（中文）</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input type="text" nz-input formControlName="fullname" placeholder="请输入表全名（中文），限20字" maxlength="20">
+        <nz-form-explain *ngIf="(newTableForm.get('fullname').dirty || newTableFormSubmitted) && newTableForm.get('fullname').errors">表的中文名称不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item [class.has-error]="newTableFormSubmitted && newTableForm.get('description').errors">
+      <nz-form-label [nzSpan]="6" nzRequired>对表的描述</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+      	<textarea [style.height.px]=80 nz-input formControlName="description" placeholder="请输入对表的描述，限200字" maxlength="200"></textarea>
+        <nz-form-explain *ngIf="(newTableForm.get('description').dirty || newTableFormSubmitted) && newTableForm.get('description').errors">表的描述不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item [style.margin-bottom.px]=0 *ngIf="tableModalTitle != '新建表'">
+      <nz-form-label [nzSpan]="6">停用该表</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+      	<nz-switch formControlName="status"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>  

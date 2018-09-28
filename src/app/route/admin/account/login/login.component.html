@@ -1,0 +1,37 @@
+<div class="login">
+	<div class="box">
+		<div class="header"></div>
+		<div class="content">
+			<form nz-form [formGroup]="loginForm" (ngSubmit)="login()">
+				<nz-form-item [class.has-error]="loginFormSubmitted && loginForm.get('mobile').errors">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-user">
+			            	<input type="text" nz-input formControlName="mobile" placeholder="账号">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(loginForm.get('mobile').dirty || loginFormSubmitted) && loginForm.get('mobile').errors">请输入账号！</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+		      	<nz-form-item [class.has-error]="loginFormSubmitted && loginForm.get('password').errors">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-lock">
+			            	<input type="password" nz-input formControlName="password" placeholder="密码">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(loginForm.get('password').dirty || loginFormSubmitted) && loginForm.get('password').errors">
+			          		<span *ngIf="loginForm.get('password').errors?.required">请输入密码！</span>
+			          		<span *ngIf="loginForm.get('password').errors?.pattern">请输入6-12位数字或者字母</span>
+			          	</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+			    <nz-form-item class="mb0">
+			    	<label nz-checkbox formControlName="autoLogin">下次自动登录</label>
+			    	<a class="f-r" routerLink="/adminAccount/forgetPassword">忘记密码？</a>
+			    </nz-form-item>
+			    <button nz-button nzType="primary">登录</button>
+			    <div class="register">
+			    	还没有账号？ <a routerLink="/adminAccount/register">立即注册</a>
+			    </div>
+		    </form>
+		</div>
+	</div>
+</div>
+

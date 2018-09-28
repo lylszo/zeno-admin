@@ -1,0 +1,62 @@
+<div class="myWork">
+	<ng-template #extraTemplate>
+      	<a routerLink="/adminAccount/login" class="title-right-link title">
+	      	管理平台<i class="anticon anticon-arrow-right"></i>
+	  	</a>
+    </ng-template>
+	<nz-tabset [nzTabBarExtraContent]="extraTemplate" class="tabset">
+      	<nz-tab nzTitle="我的工作表">
+      		<nz-alert *ngIf="!myList.length" nzType="info" class="ml15 mr15" nzMessage="您还没有添加自己的项目"></nz-alert>
+        	<div *ngIf="myList.length" class="myList" nz-row>
+        		<div *ngFor="let item of myList" nz-col nzSpan="6" class="box"> 
+        			<a class="card" (click)="getUrl(item)">
+		        		<nz-card [nzBodyStyle]="{'padding': 0,'line-height': '40px'}" [nzCover]="cardImg">
+					      	<nz-card-meta [nzTitle]="item.applicationName"></nz-card-meta>
+					      	<ng-template #cardImg>
+						      	<img alt="example" width="100%" height="166" src="{{item.applicationPhotoUrl || '../../../assets/imgs/default.png'}}"/>
+						    </ng-template>
+					    </nz-card>         				
+        			</a>
+        		</div>  
+        	</div>
+      	</nz-tab>
+      	<nz-tab nzTitle="应用列表">
+	        <div class="content">
+	        	<form nz-row>
+	        		<div nz-col nzSpan="18">
+	        			<input nz-input placeholder="请输入关键词" name="key" [(ngModel)]="key">
+	        		</div>
+		        	<div nz-col nzSpan="6">
+		        		<button nz-button class="f-r" (click)="getList()">搜索</button>
+		        	</div>
+	        	</form>
+	        	<nz-alert *ngIf="!list.length" nzType="info" class="mt15" nzMessage="暂无项目"></nz-alert>
+				<nz-list class="list"
+						 *ngIf="list.length"
+						 [nzDataSource]="list"
+						 [nzRenderItem]="item"
+						 nzSize="small">
+					<ng-template #item let-item>
+						<nz-list-item [nzContent]="listContent" [nzActions]="[addAction]">
+							<img src="{{item.applicationPhotoUrl || '../../../assets/imgs/default.png'}}" class="mr10 br2" width="60" height="60">
+							<ng-template #addAction>
+								<div class="mr15">
+									<a *ngIf="!item.check" nzTitle="添加该项目到我的工作表" nzPlacement="bottom" nz-tooltip (click)="add(item)">
+										添加
+									</a>
+									<i *ngIf="item.check" nzTitle="已添加" nzPlacement="bottom" nz-tooltip class="anticon anticon-check checkIcon"></i>					
+								</div>
+							</ng-template>
+							<ng-template #listContent>
+								<div>
+									<p class="color-333">{{item.applicationName}}</p>
+									<p class="color-aaa">{{item.applicationDescription}}</p>	
+								</div>
+							</ng-template>	
+						</nz-list-item>
+					</ng-template>
+				</nz-list>
+	        </div>
+      	</nz-tab>
+    </nz-tabset>
+</div>

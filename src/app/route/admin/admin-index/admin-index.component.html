@@ -1,0 +1,92 @@
+<div class="adminIndex" nz-row>
+  <div class="head-title">
+    我创建的项目
+    <button class="f-r" nz-button nzType="primary" (click)="newObj()">新建项目</button>
+  </div>
+	<nz-alert *ngIf="!myList.length && !isSpinning" nzType="info" class="mt15" nzMessage="您还没有创建过项目"></nz-alert>
+  <nz-spin 
+    *ngIf="myList.length" [nzSize]="'large'" 
+    nzTip='Loading...' 
+    [nzSpinning]="isSpinning">
+    <div class="myList">
+      <nz-list
+           [nzDataSource]="myList"
+           [nzRenderItem]="item"
+           [nzSize]="large"
+           nzSize="small">
+        <ng-template #item let-item>
+          <nz-list-item [nzContent]="listContent" [nzActions]="[editAction]">
+            <img src="{{item.icon || '../../../assets/imgs/default.png'}}" class="mr10 br2" width="64" height="64">
+            <ng-template #editAction>
+              <a class="mr15" routerLink="{{'/admin/project/edit/' + item.id}}">管理文件</a>
+              <a class="mr15" (click)="newObj(item)">编辑</a>
+              <a class="mr15" (click)="delItem(item)">删除</a>                
+            </ng-template>
+            <ng-template #listContent>
+              <div>
+                <p class="color-333">
+                  <span class="bold f16">{{item.name}}</span>
+                  <span *ngIf="item.title">（{{item.title}}）</span>
+                </p>   
+                <p class="color-aaa">{{item.description}}</p>
+                <p class="f12">创建于 {{item.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</p>                
+              </div>
+            </ng-template>  
+          </nz-list-item>
+        </ng-template>
+      </nz-list>          
+    </div>
+  </nz-spin>
+
+</div>
+
+<!-- 新建项目模态框 -->
+<nz-modal [(nzVisible)]="newObjModal" (nzOnCancel)="newObjModal=false" (nzOnOk)="newObjOk()" nzTitle="{{newObjTitle}}">
+  <form nz-form [formGroup]="newObjForm" *ngIf="newObjModal">
+    <nz-form-item [class.has-error]="newObjFormSubmitted && newObjForm.get('name').errors">
+      <nz-form-label [nzSpan]="4" nzRequired>名称</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <input type="text" nz-input formControlName="name" placeholder="请输入项目名称（英文），限20字" maxlength="20">
+        <nz-form-explain *ngIf="(newObjForm.get('name').dirty || newObjFormSubmitted) && newObjForm.get('name').errors">项目名称不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item [class.has-error]="newObjFormSubmitted && newObjForm.get('title').errors">
+      <nz-form-label [nzSpan]="4" nzRequired>标题</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <input type="text" nz-input formControlName="title" placeholder="请输入项目标题，限30字" maxlength="30">
+        <nz-form-explain *ngIf="(newObjForm.get('title').dirty || newObjFormSubmitted) && newObjForm.get('title').errors">项目标题不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item [class.has-error]="newObjFormSubmitted && newObjForm.get('description').errors">
+      <nz-form-label [nzSpan]="4" nzRequired>描述</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <textarea [style.height.px]=80 nz-input formControlName="description" placeholder="请输入项目描述，限200字" maxlength="200"></textarea>
+        <nz-form-explain *ngIf="(newObjForm.get('description').dirty || newObjFormSubmitted) && newObjForm.get('description').errors">项目描述不能为空！</nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">图标</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <div class="clearfix">
+        <nz-upload
+          nzAction="http://zeno.xwkj.local:9005/openapi/file/upload"
+          [nzHeaders]="{'Authorization': token}"
+          nzListType="picture-card"
+          [(nzFileList)]="fileList"
+          [nzShowButton]="fileList.length < 1"
+          [nzPreview]="handlePreview">
+            <i class="anticon anticon-plus"></i>
+            <div class="ant-upload-text">Upload</div>
+        </nz-upload>
+        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
+          <ng-template #modalContent>
+            <div class="pt30">
+              <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+            </div>
+          </ng-template>
+        </nz-modal>
+      </div>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>           

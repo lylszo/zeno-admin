@@ -1,0 +1,44 @@
+<div class="admin">
+	<div class="header">
+		<div class="center clearfix">
+			<div class="f-l">
+				<a class="logo" routerLink="/admin"><img src="../../../assets/imgs/logo.png"></a>
+				<ul class="links clearfix">
+					<li><a routerLink="/admin">项目管理</a></li>
+					<li><a routerLink="/admin/database">数据管理</a></li>
+					<li><a routerLink="/">我的工作表</a></li>
+				</ul>				
+			</div>
+			<div class="f-r">
+				<nz-dropdown class="person">
+			      <a nz-dropdown class="avatar">
+					<nz-avatar class="avatar-icon" nzIcon="anticon anticon-user" nzSrc="{{user.photo?.url || '//zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'}}"></nz-avatar>
+			        <span class="name">{{user.name}}</span>
+			        <i class="anticon anticon-down"></i>
+			      </a>
+			      <ul nz-menu nzSelectable>
+			        <li nz-menu-item routerLink="/admin/person/dataSet">
+			          <a>资料设置</a>
+			        </li>
+			        <li nz-menu-item routerLink="/admin/person/updatePassword">
+			          <a>修改密码</a>
+			        </li>
+			        <li nz-menu-item>
+			          <a (click)="logout()">退出登录</a>
+			        </li>
+			      </ul>
+			    </nz-dropdown>
+			</div>
+		</div>
+	</div>
+	<div class="body">
+		<div class="container">
+			<router-outlet></router-outlet>
+		</div>
+	</div>
+	<div class="footer">
+		<p>Copyright © www.pupuwang.com, All Rights Reserved.</p>
+		<p>Tel:0755-26637688 mail:service@pupuwang.com</p>
+	</div>
+</div>
+
