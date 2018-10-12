@@ -3,7 +3,36 @@
 		width: 500px;
 		height: 400px;
 		margin: 50px auto;
-		background-color: red;
-		
+		.avatar-uploader{
+			.avatar{
+				width: 86px;
+				height: 86px;
+			}	
+			.ant-upload{
+				margin: 0 auto;
+				background-color: yellow;
+			}	
+			#lyl{
+				.ant-upload {
+					background-color: blue;
+				}
+			}	
+		}
+		.submit{
+			margin-top: 35px;
+			text-align: center;
+		}
+	}
+}
+
+:host ::ng-deep .avatar-uploader > .ant-upload {
+	margin: 0 auto;
+}
+:host ::ng-deep .ant-input-group-addon{
+	padding: 0;
+	div{
+		line-height: 30px;
+		width: 30px;
+		cursor: pointer;
 	}
 }

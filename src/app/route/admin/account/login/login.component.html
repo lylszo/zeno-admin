@@ -1,6 +1,9 @@
 <div class="login">
 	<div class="box">
-		<div class="header"></div>
+		<div class="header clearfix">
+			<div class="logo" routerLink="/" title="返回我的工作表"></div>
+			<div class="title">登录</div>
+		</div>
 		<div class="content">
 			<form nz-form [formGroup]="loginForm" (ngSubmit)="login()">
 				<nz-form-item [class.has-error]="loginFormSubmitted && loginForm.get('mobile').errors">
@@ -24,11 +27,11 @@
 		      	</nz-form-item>
 			    <nz-form-item class="mb0">
 			    	<label nz-checkbox formControlName="autoLogin">下次自动登录</label>
-			    	<a class="f-r" routerLink="/adminAccount/forgetPassword">忘记密码？</a>
+			    	<a class="f-r" routerLink="/forgetPassword">忘记密码？</a>
 			    </nz-form-item>
-			    <button nz-button nzType="primary">登录</button>
+			    <button nz-button nzType="primary" [nzLoading]="isLoading">登录</button>
 			    <div class="register">
-			    	还没有账号？ <a routerLink="/adminAccount/register">立即注册</a>
+			    	还没有账号？ <a routerLink="/register">立即注册</a>
 			    </div>
 		    </form>
 		</div>

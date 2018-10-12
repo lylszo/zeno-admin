@@ -32,6 +32,8 @@ export class HttpService {
         }else if(sort == 'pic'){
           this.headers = new HttpHeaders({'Authorization': token});
         }
+      }else{
+        this.router.navigate(['/']);
       }
     }
   }
@@ -57,7 +59,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -68,7 +71,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -79,7 +83,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -90,7 +95,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -100,7 +106,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -111,7 +118,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -122,7 +130,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 
@@ -133,7 +142,8 @@ export class HttpService {
       .subscribe(data => {
         callback(data);
       }, error => {
-        err ? err(error.error) : this.handleError(error);
+        this.handleError(error);
+        err ? err(error.error) : false;
       });
   }
 

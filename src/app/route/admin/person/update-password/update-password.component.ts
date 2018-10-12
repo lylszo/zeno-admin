@@ -42,7 +42,7 @@ export class UpdatePasswordComponent implements OnInit {
     this.http.post('user/setPassword', param, () => {
       this.message.create('success', '修改成功，请重新登录！');
       setTimeout(() => {
-        this.router.navigate(['/adminAccount/login']);
+        this.router.navigate(['/login']);
       }, 1000)
     })
   }

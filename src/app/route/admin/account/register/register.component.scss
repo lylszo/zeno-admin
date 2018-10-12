@@ -1,0 +1,57 @@
+.register{
+	box-sizing: content-box;
+	padding-top: 12vh;
+	padding-bottom: 30px;
+	.box{
+		margin: 0 auto;
+		width: 350px;
+		background-color: #fff;
+		border-radius: 4px;
+		box-shadow: 0 0 3px #cfdbe2;
+		margin-bottom: 10px;
+		.header{
+			height: 54px;
+			padding: 0 15px;
+			line-height: 54px;
+			border-radius: 4px 4px 0 0;
+			background-color: #23b7e5;
+			overflow: hidden;
+			.logo{
+				width: 111px;
+				height: 33px;
+				float: left;
+				margin-top: 10px;
+				cursor: pointer;
+				background: url('../../../../../assets/imgs/logo.png');
+			}
+			.title{
+				float: right;
+				font-size: 16px;
+				letter-spacing: 3px;
+				color: #fff;
+			}
+		}
+		.content{
+			padding: 30px 15px;
+			form {
+				.input-group{
+					margin-bottom: 25px;
+				}
+				button.submit {
+					margin-top: 5px;
+					width: 100%;
+				}
+				.foot{
+					height: 20px;
+					margin-top: 20px;
+					text-align: center;
+				}
+			}
+		}
+	}
+	p{
+		font-size: 12px;
+		text-align: center;
+		line-height: 20px;
+	}
+}

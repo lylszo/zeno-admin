@@ -4,6 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 
 import { AdminComponent } from './admin.component';
+import { LoginComponent } from './account/login/login.component';
+import { ForgetPasswordComponent } from './account/forget-password/forget-password.component';
+import { RegisterComponent } from './account/register/register.component';
 
 const routes: Routes = [
     {
@@ -17,7 +20,9 @@ const routes: Routes = [
           { path: '**', redirectTo: ''}
 	    ]
     },
-    { path: 'adminAccount', loadChildren: './account/account.module#AccountModule' },
+    { path: 'login', component: LoginComponent },
+    { path: 'forgetPassword', component: ForgetPasswordComponent },
+    { path: 'register', component: RegisterComponent }
 ];
 
 @NgModule({
@@ -26,7 +31,10 @@ const routes: Routes = [
   	RouterModule.forChild(routes)
   ],
   declarations: [
-  	AdminComponent
+  	AdminComponent,
+    LoginComponent,
+    ForgetPasswordComponent,
+    RegisterComponent
   ]
 })
 export class AdminModule { }

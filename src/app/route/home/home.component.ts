@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../../shared/service/http.service';
 import { CookieService} from 'ngx-cookie-service';
+import { NzDropdownContextComponent, NzDropdownService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-work',
-  templateUrl: './work.component.html',
-  styleUrls: ['./work.component.scss']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
 })
-export class WorkComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
-  constructor(private http: HttpService, private cookie: CookieService) { }
+  constructor(private http: HttpService, private cookie: CookieService, private nzDropdownService: NzDropdownService) { }
 
   // 数据初始化
   myList = [];
@@ -55,26 +56,35 @@ export class WorkComponent implements OnInit {
   }
 
   // 添加项目
+  timer = new Date(+`${new Date('2088-8-8').getTime()}`);//设置的我的列表收藏时间
   add(item){
   	item.check = true;
     if(!this.myList.includes(item.applicationId)){
       this.myList = [...this.myList, item];
-      let oldIdStr = this.cookie.get('applicationIds');
-      let timer = new Date(+`${new Date('2088-8-8').getTime()}`);
-      if(oldIdStr){
-        this.cookie.set('applicationIds', `${oldIdStr},${item.applicationId}`, timer);
-      }else{
-        this.cookie.set('applicationIds', `${item.applicationId}`, timer);
-      }
+      let str = this.myList.map(v => v.applicationId).join();
+      this.cookie.set('applicationIds', str, this.timer);
     }
   }
 
-  //删除项目
-  del(item, idx){
-    item.check = false;
-    this.myList.splice(idx, 1);
+  // 我的列表右键菜单
+  activeItem:any; //右键选中的项目
+  activeIdx:any; //右键选中的项目的索引
+  private dropdown: NzDropdownContextComponent;
+  contextMenu($event, template, item, idx): void {
+    this.dropdown = this.nzDropdownService.create($event, template);
+    this.activeItem = item;
+    this.activeIdx = idx;
   }
 
+  //从我的列表中移除项目
+  del(){
+    this.activeItem.check = false;
+    this.myList.splice(this.activeIdx, 1);
+    let str = this.myList.map(v => v.applicationId).join();
+    this.cookie.set('applicationIds', str, this.timer);
+    this.dropdown.close();
+  }
+  
   //点击获取对象项目的url
   getUrl(item){
     let newPage = window.open();

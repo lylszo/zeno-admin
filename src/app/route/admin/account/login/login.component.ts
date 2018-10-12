@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
 
   //登录
   loginFormSubmitted = false;
+  isLoading = false;
   login(){
     this.loginFormSubmitted = true;
     if(this.loginForm.invalid){
@@ -57,11 +58,15 @@ export class LoginComponent implements OnInit {
   		mobile: this.loginForm.value.mobile,
   		password: this.loginForm.value.password
   	}
+    this.isLoading = true;
   	this.http._post("user/login", params, (data) => {
   		let timer = new Date(new Date().getTime() + 24*60*60*1000);// 设置有效期24小时
   		this.cookie.set("ZenoToken", "Bearer " + data.token, timer);  // 登录的时候将token保存在cookie里面
   		this.router.navigate(['/admin']);
-  	})
+      this.isLoading = false;
+  	}, err => {
+      this.isLoading = false;
+    })
   }
   	
 	

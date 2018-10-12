@@ -1,3 +1,88 @@
-<p>
-  register works!
-</p>
+<div class="register">
+	<div class="box">
+		<div class="header clearfix">
+			<div class="logo" routerLink="/" title="返回我的工作表"></div>
+			<div class="title">注册</div>
+		</div>
+		<div class="content">
+			<form nz-form [formGroup]="registerForm">
+				<nz-form-item [class.has-error]="registerFormSubmitted && registerForm.get('name').errors">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-user">
+			            	<input type="text" nz-input maxlength="10" formControlName="name" placeholder="真实姓名">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(registerForm.get('name').dirty || registerFormSubmitted) && registerForm.get('name').errors">
+			          		<span *ngIf="registerForm.get('name').errors?.required">请输入真实姓名！</span>
+			          		<span *ngIf="registerForm.get('name').errors?.pattern">请输入10个以内的字符！</span>
+			          	</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+				<nz-form-item [class.has-error]="registerFormSubmitted && registerForm.get('mobile').errors">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-phone">
+			            	<input type="text" nz-input formControlName="mobile" placeholder="手机号码">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(registerForm.get('mobile').dirty || registerFormSubmitted) && registerForm.get('mobile').errors">
+			          		<span *ngIf="registerForm.get('mobile').errors?.required">请输入手机号码！</span>
+			          		<span *ngIf="registerForm.get('mobile').errors?.pattern">请输入正确的手机号码！</span>
+			          	</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+				<nz-form-item [hidden]="registerForm.get('mobile').errors" [class.has-error]="registerFormSubmitted && registerForm.get('vcode').errors">
+			        <nz-form-control>
+			          	<nz-input-group [nzSuffix]="suffixButton" nzSearch>
+			            	<input type="text" nz-input formControlName="vcode" placeholder="验证码">
+			            	<ng-template #suffixButton>
+						      	<button [disabled]="vcodeText != '发送验证码' && vcodeText != '再次发送验证码'" style="width: 130px;" nz-button nzSearch (click)="getVcode()">{{vcodeText}}</button>
+						    </ng-template>
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(registerForm.get('vcode').dirty || registerFormSubmitted) && registerForm.get('vcode').errors">请输入验证码！</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+				<nz-form-item [class.has-error]="registerFormSubmitted && registerForm.get('workCity').errors">
+			        <nz-form-control>
+		            	<nz-select nzShowSearch nzAllowClear nzPlaceHolder="工作城市" formControlName="workCity">
+							<nz-option-group nzLabel="{{province.name}}" *ngFor="let province of districts">
+								<nz-option nzValue="{{city.code}}" nzLabel="{{city.name}}" *ngFor="let city of province.child"></nz-option>
+							</nz-option-group>
+					    </nz-select>
+			          	<nz-form-explain *ngIf="(registerForm.get('workCity').dirty || registerFormSubmitted) && registerForm.get('workCity').errors">请选择工作城市！</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+		      	<nz-form-item [class.has-error]="registerFormSubmitted && registerForm.get('password').errors">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-lock">
+			            	<input type="password" nz-input formControlName="password" autocomplete="off" placeholder="密码">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(registerForm.get('password').dirty || registerFormSubmitted) && registerForm.get('password').errors">
+			          		<span *ngIf="registerForm.get('password').errors?.required">请输入密码！</span>
+			          		<span *ngIf="registerForm.get('password').errors?.pattern">请输入6-12位数字或者字母</span>
+			          	</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+		      	<nz-form-item [hidden]="registerForm.get('password').errors" [class.has-error]="registerFormSubmitted && registerForm.get('passwordAgain').errors || (registerForm.value.password && registerForm.value.passwordAgain && registerForm.value.password != registerForm.value.passwordAgain)">
+			        <nz-form-control>
+			          	<nz-input-group nzPrefixIcon="anticon anticon-lock">
+			            	<input type="password" nz-input formControlName="passwordAgain" placeholder="确认密码">
+			          	</nz-input-group>
+			          	<nz-form-explain *ngIf="(registerForm.get('passwordAgain').dirty || registerFormSubmitted) && (registerForm.get('passwordAgain').errors || registerForm.value.password != registerForm.value.passwordAgain)">
+			          		<span *ngIf="registerForm.get('passwordAgain').errors?.required">请再次输入密码！</span>
+			          		<span *ngIf="!registerForm.get('passwordAgain').errors && registerForm.value.password != registerForm.value.passwordAgain">两次输入密码不一致！</span>
+			          		<span *ngIf="registerForm.get('passwordAgain').errors?.pattern">请输入6-12位数字或者字母</span>
+			          	</nz-form-explain>
+			        </nz-form-control>
+		      	</nz-form-item>
+			    <button class="submit" nz-button nzType="primary" (click)="register()" [nzLoading]="isLoading">注册</button>
+			    <div class="foot cleafix">
+			    	<div class="f-l">
+			    		已有账号？<a routerLink="/login">马上登录</a>
+			    	</div>
+			    	<div class="f-r">
+			    		<a routerLink="/forgetPassword">忘记密码？</a>
+			    	</div>
+			    </div>
+		    </form>
+		</div>
+	</div>
+</div>
+

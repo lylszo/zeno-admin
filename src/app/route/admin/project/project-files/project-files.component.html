@@ -9,7 +9,8 @@
 		<div class="tree">
 			<dl class="treeContent">
 				<ng-container>
-					<dt (click)="projectsExpanded = !projectsExpanded">
+					<dt (click)="projectsExpanded = !projectsExpanded"
+						(contextmenu)="contextMenu($event, proRight, 'page')">
 						<i *ngIf="!projectsExpanded" class="iconfont icon-arrowrightb arrow"></i>
 						<i *ngIf="projectsExpanded" class="iconfont icon-arrowdownb arrow"></i>
 						<i *ngIf="!projectsExpanded" class="anticon anticon-folder folder"></i>
@@ -121,6 +122,11 @@
 					</ng-container>
 				</ng-container>
 			</dl>
+			<ng-template #proRight>
+		        <ul nz-menu nzInDropDown>
+		          	<li nz-menu-item (click)="compile()">编译</li>
+		        </ul>
+	      	</ng-template>
 			<ng-template #folderRight>
 		        <ul nz-menu nzInDropDown>
 		          	<li nz-menu-item (click)="newFile()">新建文件</li>
@@ -141,7 +147,7 @@
 					</div>
 				</div>
 				<div class="actionlist clearfix">
-					<div class="item" title="使用模板" (click)="showTemplateBox = !showTemplateBox">
+					<div class="item" title="应用模板" (click)="showTemplateBox = !showTemplateBox">
 						<i class="iconfont icon-arrow-left" *ngIf="!showTemplateBox"></i>
 						<i class="iconfont icon-arrow-right" *ngIf="showTemplateBox"></i>
 					</div>
@@ -174,7 +180,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -192,7 +199,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -210,7 +218,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -228,7 +237,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -246,7 +256,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -264,7 +275,8 @@
 									        	<ng-template #projectsContent>
 									              	<div>
 										                <p>{{item.name}}</p>   
-										                <a class="f12">插入模板</a>            
+										                <a class="f12" (click)="useTemplate(item)">应用模板</a>  
+										                <a class="f12 ml15" (click)="templateDetail(item)">详情</a>          
 								             	 	</div>
 									            </ng-template>  
 									      	</nz-list-item>
@@ -295,7 +307,7 @@
 		[nzNotFoundContent]="'暂无可选模板'"	
 		name="template"
 		class="mt15">
-		<nz-option *ngIf="!templates || templates.length" nzLabel="不使用模板"></nz-option>
+		<nz-option *ngIf="!templates || templates.length" nzLabel="不应用模板"></nz-option>
 		<nz-option *ngFor="let item of templates" nzValue="{{item.template}}" nzLabel="{{item.name}}"></nz-option>
 	</nz-select>
 </nz-modal>
@@ -311,5 +323,24 @@
 				*ngIf="!previewImage">
 			</nz-alert>			
 		</div>
+	</ng-template>
+</nz-modal>
+
+<!-- 查看模板详情模态框 -->
+<nz-modal 
+	[(nzVisible)]="templateDetailModal" 
+	(nzOnCancel)="templateDetailModal=false" 
+	(nzOnOk)="templateDetailOk()" 
+	nzWidth="850" 
+	[nzTitle]="detailTitle"
+	[nzFooter]="templateDetailFooter">
+	<p *ngIf="activeTemplate">{{activeTemplate}}</p>
+	<nz-alert 
+		nzType="info" 
+		nzMessage="暂无详情" 
+		*ngIf="!activeTemplate">
+	</nz-alert>	
+	<ng-template #templateDetailFooter>
+		<button nz-button nzType="primary" (click)="templateDetailModal=false">确定</button>
 	</ng-template>
 </nz-modal>

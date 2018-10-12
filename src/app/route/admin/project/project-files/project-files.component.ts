@@ -62,6 +62,7 @@ export class ProjectFilesComponent implements OnInit {
   initJson(){
     let container = document.getElementById("jsoneditor");
     let options = {
+      indentation: 4,
       mode: 'code',
       onError: err => {
         this.message.create('error', err.toString());
@@ -96,7 +97,7 @@ export class ProjectFilesComponent implements OnInit {
         }catch(err) {
           jsonObj = {};
         }
-        this.editor.set(jsonObj);      
+        this.editor.set(jsonObj);    
       })      
     }
   }
@@ -284,18 +285,38 @@ export class ProjectFilesComponent implements OnInit {
       services: this.allTemplates.filter(v => (v.type == 'service' && v.name.indexOf(key) != -1))
     }
   }
-  //右键应用模板
-  contextMenuTemplate($event, template, sort, item?){
-    this.dropdown = this.nzDropdownService.create($event, template);
+  //使用模板（直接覆盖当前文件）
+  useTemplate(item){
+    let jsonObj;
+    try {
+      jsonObj = JSON.parse(item.template);
+    }catch(err) {
+      jsonObj = {};
+    }
+    this.editor.set(jsonObj);   
   }
   //查看模板预览图
   previewVisible = false;//显示预览模态框
   templatePic(){
     this.previewVisible = true;
   }
-  //查看
-  templateUse(){
-    alert('sdfffdf');
-  } 
+
+  //查看模板详情
+  detailTitle = '模板详情';
+  templateDetailModal = false;
+  activeTemplate = '';//当前模板
+  templateDetail(item){
+    this.activeTemplate = item.remark || '';
+    this.templateDetailModal = true;
+    this.detailTitle = '模板详情 - ' + item.name;
+  }
+
+  //编译
+  compile(){
+    this.http.post(`element/compile/${this.id}`, '', data => {
+      this.message.create('success', '编译成功！');
+    })
+    this.dropdown.close();
+  }
 
 }

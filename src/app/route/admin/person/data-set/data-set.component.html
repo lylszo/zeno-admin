@@ -6,8 +6,121 @@
 		</a>
 	</div>
 	<div class="content">
-		<form nz-form [formGroup]="dataForm">
-		    
+		<form nz-form [formGroup]="dataForm" *ngIf="showForm">
+		  	<nz-form-item>
+		  		<nz-upload class="avatar-uploader" id="lyl"
+				    nzAction="http://zeno.xwkj.local:9005/openapi/file/upload"
+	          		[nzHeaders]="{'Authorization': token}"
+				    nzListType="picture-card"
+				    title="更换头像"
+				    [nzBeforeUpload]="beforeUpload"
+				    (nzChange)="handleChange($event)"
+				    [nzShowUploadList]="false">
+				    <ng-container *ngIf="!avatar?.url">
+				      	<i class="anticon anticon-plus"></i>
+				      	<div class="ant-upload-text">上传头像</div>
+				    </ng-container>
+				    <img *ngIf="avatar?.url" [src]="avatar?.url" class="avatar">
+			  	</nz-upload>
+		  	</nz-form-item>
+	  	 	<nz-form-item [class.has-error]="dataFormSubmitted && dataForm.get('name').errors">
+	  	 		<nz-form-label [nzSpan]="9" nzRequired>真实姓名</nz-form-label>
+		        <nz-form-control [nzSpan]="10">
+		          	<nz-input-group nzPrefixIcon="anticon anticon-user">
+		            	<input type="text" nz-input maxlength="10" formControlName="name" placeholder="真实姓名">
+		          	</nz-input-group>
+		          	<nz-form-explain *ngIf="(dataForm.get('name').dirty || dataFormSubmitted) && dataForm.get('name').errors">
+		          		<span *ngIf="dataForm.get('name').errors?.required">请输入真实姓名！</span>
+		          		<span *ngIf="dataForm.get('name').errors?.pattern">请输入10个以内的字符！</span>
+		          	</nz-form-explain>
+		        </nz-form-control>
+	      	</nz-form-item>
+			<nz-form-item [class.has-error]="dataFormSubmitted && dataForm.get('workCity').errors">
+	  	 		<nz-form-label [nzSpan]="9" nzRequired>工作城市</nz-form-label>
+		        <nz-form-control [nzSpan]="10">
+	            	<nz-select nzShowSearch nzAllowClear nzPlaceHolder="工作城市" formControlName="workCity">
+						<nz-option-group nzLabel="{{province.name}}" *ngFor="let province of districts">
+							<nz-option nzValue="{{city.code}}" nzLabel="{{city.name}}" *ngFor="let city of province.child"></nz-option>
+						</nz-option-group>
+				    </nz-select>
+		          	<nz-form-explain *ngIf="(dataForm.get('workCity').dirty || dataFormSubmitted) && dataForm.get('workCity').errors">请选择工作城市！</nz-form-explain>
+		        </nz-form-control>
+	      	</nz-form-item>
+	  	 	<nz-form-item [class.has-error]="dataFormSubmitted && dataForm.get('mobile').errors">
+	  	 		<nz-form-label [nzSpan]="9" nzRequired>手机号码</nz-form-label>
+		        <nz-form-control [nzSpan]="10">
+		          	<nz-input-group nzPrefixIcon="anticon anticon-phone" [nzAddOnAfter]="afterTemplate">
+		            	<input type="text" nz-input formControlName="mobile" placeholder="手机号码">
+		          	</nz-input-group>
+		          	<ng-template #afterTemplate>
+		          		<div title="更换绑定手机" (click)="changePhone()">
+		          			<i class="anticon anticon-edit"></i>
+		          		</div>
+		          	</ng-template>
+		        </nz-form-control>
+	      	</nz-form-item>		
+	      	<div class="submit">
+				<button 
+					nz-button 
+					nzType="primary" 
+					nzSize="large" 
+					[style.width.px]=100
+					(click)="updateData()">提交</button>
+			</div>
 	  	</form>
 	</div>
 </div>
+
+<!-- 更换绑定手机模态框 -->
+<nz-modal 
+	[(nzVisible)]="changePhoneModal" 
+	(nzOnCancel)="changePhoneModal=false" 
+	(nzOnOk)="changePhoneOk()" 
+	nzTitle="更换绑定手机">
+  <form nz-form [formGroup]="changePhoneForm" *ngIf="changePhoneModal">
+    <nz-form-item [class.has-error]="changePhoneFormSubmitted && changePhoneForm.get('oldMobile').errors">
+ 		<nz-form-label [nzSpan]="8" nzRequired>原手机号码</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          	<nz-input-group nzPrefixIcon="anticon anticon-phone">
+            	<input type="text" nz-input formControlName="oldMobile" placeholder="手机号码">
+          	</nz-input-group>
+        </nz-form-control>
+  	</nz-form-item>	
+    <nz-form-item [class.has-error]="changePhoneFormSubmitted && changePhoneForm.get('oldVcode').errors">
+ 		<nz-form-label [nzSpan]="8" nzRequired>原手机验证码</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+			<nz-input-group [nzSuffix]="oldSuffixButton" nzSearch>
+        		<input type="text" nz-input formControlName="oldVcode" placeholder="验证码">
+        		<ng-template #oldSuffixButton>
+		      		<button [disabled]="oldVcodeText != '发送验证码' && oldVcodeText != '再次发送验证码'" style="width: 130px;" nz-button nzSearch (click)="getVcode('old')">{{oldVcodeText}}</button>
+		    	</ng-template>
+      		</nz-input-group>
+      		<nz-form-explain *ngIf="(changePhoneForm.get('oldVcode').dirty || changePhoneFormSubmitted) && changePhoneForm.get('oldVcode').errors">请输入验证码！</nz-form-explain>
+        </nz-form-control>
+  	</nz-form-item>	
+    <nz-form-item [class.has-error]="changePhoneFormSubmitted && changePhoneForm.get('mobile').errors">
+ 		<nz-form-label [nzSpan]="8" nzRequired>新手机号码</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          	<nz-input-group nzPrefixIcon="anticon anticon-phone">
+            	<input type="text" nz-input formControlName="mobile" placeholder="手机号码">
+          	</nz-input-group>
+          	<nz-form-explain *ngIf="(changePhoneForm.get('mobile').dirty || changePhoneFormSubmitted) && changePhoneForm.get('mobile').errors">
+          		<span *ngIf="changePhoneForm.get('mobile').errors?.required">请输入手机号码！</span>
+          		<span *ngIf="changePhoneForm.get('mobile').errors?.pattern">请输入正确的手机号码！</span>
+          	</nz-form-explain>
+        </nz-form-control>
+  	</nz-form-item>	
+    <nz-form-item [hidden]="changePhoneForm.get('mobile').errors" [class.has-error]="changePhoneFormSubmitted && changePhoneForm.get('vcode').errors">
+ 		<nz-form-label [nzSpan]="8" nzRequired>新手机验证码</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+			<nz-input-group [nzSuffix]="suffixButton" nzSearch>
+        		<input type="text" nz-input formControlName="vcode" placeholder="验证码">
+        		<ng-template #suffixButton>
+		      		<button [disabled]="vcodeText != '发送验证码' && vcodeText != '再次发送验证码'" style="width: 130px;" nz-button nzSearch (click)="getVcode()">{{vcodeText}}</button>
+		    	</ng-template>
+      		</nz-input-group>
+      		<nz-form-explain *ngIf="(changePhoneForm.get('vcode').dirty || changePhoneFormSubmitted) && changePhoneForm.get('vcode').errors">请输入验证码！</nz-form-explain>
+        </nz-form-control>
+  	</nz-form-item>	
+  </form>
+</nz-modal>  

@@ -3,10 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../shared/shared.module';
 
-import { WorkComponent } from './work.component';
+import { HomeComponent } from './home.component';
 
 const routes: Routes = [
-    { path: '', component: WorkComponent },
+    { path: '', component: HomeComponent },
     { path: '**', redirectTo: '' }
 ];
 
@@ -16,7 +16,7 @@ const routes: Routes = [
   	RouterModule.forChild(routes)
   ],
   declarations: [
-  	WorkComponent
+  	HomeComponent
   ]
 })
-export class WorkModule { }
+export class HomeModule { }

@@ -1,6 +1,6 @@
 <div class="myWork">
 	<ng-template #extraTemplate>
-      	<a routerLink="/adminAccount/login" class="title-right-link title">
+      	<a routerLink="/login" class="title-right-link title">
 	      	管理平台<i class="anticon anticon-arrow-right"></i>
 	  	</a>
     </ng-template>
@@ -8,8 +8,8 @@
       	<nz-tab nzTitle="我的工作表">
       		<nz-alert *ngIf="!myList.length" nzType="info" class="ml15 mr15" nzMessage="您还没有添加自己的项目"></nz-alert>
         	<div *ngIf="myList.length" class="myList" nz-row>
-        		<div *ngFor="let item of myList" nz-col nzSpan="6" class="box"> 
-        			<a class="card" (click)="getUrl(item)">
+        		<div *ngFor="let item of myList;let i = index;" nz-col nzSpan="6" class="box"> 
+        			<a class="card" (click)="getUrl(item)" (contextmenu)="contextMenu($event, delRight, item, i)">
 		        		<nz-card [nzBodyStyle]="{'padding': 0,'line-height': '40px'}" [nzCover]="cardImg">
 					      	<nz-card-meta [nzTitle]="item.applicationName"></nz-card-meta>
 					      	<ng-template #cardImg>
@@ -18,6 +18,11 @@
 					    </nz-card>         				
         			</a>
         		</div>  
+				<ng-template #delRight>
+			        <ul nz-menu nzInDropDown>
+			          	<li nz-menu-item (click)="del()">移除</li>
+			        </ul>
+		      	</ng-template>
         	</div>
       	</nz-tab>
       	<nz-tab nzTitle="应用列表">
